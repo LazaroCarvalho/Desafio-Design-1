@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="./style.css" ></style>
+        <title>Fylo</title>
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;400&display=swap" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;400;700&display=swap" rel="stylesheet"> 
+    </head>
+    <body>
+        
+        <!-- Container da página -->
+        <div class="background">
+
+            <!-- Container dos elementos principais -->
+            <div class="container">
+
+                <div class="card">
+                    <span>
+                        <img src="./images/logo.svg"/>
+                    </span>
+                    <div class="container-icons">
+                        <div>
+                            <img src="./images/icon-document.svg"/>
+                        </div>
+                        <div>
+                            <img src="./images/icon-folder.svg"/>
+                        </div>
+                        <div>
+                            <img src="./images/icon-upload.svg"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="message">
+                        <p>You've used <span class="letter-effect">1000 GB</span> of your storage</p>
+                        <div class="quantity-left">
+                            <h1>0</h1><spam>GB LEFT</spam>
+                        </div>
+                    </div>
+                    <div class="container-bar">
+                        <div class="bar">
+                            <div class="bar-circle">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="size-description">
+                        <p>0 GB</p>
+                        <p>1000 GB</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Container da imagem de fundo -->
+            <div class="background-image">
+
+            </div>
+        </div>
+
+        <script>
+
+            const containerBar = document.querySelector('.container-bar')
+            const bar = document.querySelector('.bar')
+
+            const textoInformandoGBUtilizado = document.querySelector('.card p:nth-of-type(1)')
+
+            const textoGBRestante = document.querySelector('.message h1')
+
+            /*
+             * Move a barra conforme a posição do cursor no momento do clique ou no momento da
+             * movimentação do cursor pressionado sob a barra
+             */
+            const moveBar = evento => {
+
+                var larguraDaBarra = evento.clientX - bar.offsetLeft + 8
+
+                var limiteDireitoDaBarra = 656 + 406
+                var limiteEsquerdoDaBarra = 664
+
+                if(evento.clientX >= limiteDireitoDaBarra) 
+                    larguraDaBarra = 414
+                else if(evento.clientX <= limiteEsquerdoDaBarra)
+                    larguraDaBarra = 16
+
+
+                bar.style.width = `${larguraDaBarra}px`
+
+                let localDoCirculo = larguraDaBarra - 16
+
+                const gbUtilizado = mostrarGBUtilizado(localDoCirculo)
+
+                mudarInfoGbUtilizado(gbUtilizado)
+
+            }
+
+            // Calcula a quantidade de GB utilizado de acordo com a posição do circulo no interior da barra
+            const mostrarGBUtilizado = localDoCirculo => {
+
+                if(localDoCirculo == 0)
+                    return 0
+
+                let gbUtilizado = localDoCirculo * 1000 / 398
+
+                return gbUtilizado.toPrecision(4)
+
+            }
+
+            // Mudando texto informativo conforme a barra se altera
+            const mudarInfoGbUtilizado = gbUtilizado => {
+                textoInformandoGBUtilizado.innerHTML = `You've used <span class="letter-effect">${gbUtilizado} GB</span> of your storage`
+                textoGBRestante.innerHTML = `${Math.trunc(1000 - gbUtilizado)}`
+            }
+
+            let mouseIsDown = false;
+            const setTrueMouseDown = evento => { mouseIsDown = true; moveBar(evento) }
+
+            const setFalseMouseDown = () => mouseIsDown = false
+
+            const mouseFoiMovido = evento => mouseIsDown ? moveBar(evento) : null
+
+
+            /*
+             * Quando a barra for clicada, atribui true à variável mouseIsDown e chama a function
+             * moveBar para mover a barra para a posição em que houve o clique do mouse
+             */
+            containerBar.addEventListener('mousedown', evento => setTrueMouseDown(evento))
+            
+            /*
+             * Quando a barra deixar de ser pressionada pelo mouse, atribui false à variável mouseIsDown
+             * Para que a barra pare de se mover até a posição do cursor
+             */
+            containerBar.addEventListener('mouseup', () => setFalseMouseDown())
+
+            /*
+             * Quando o cursor mover-se sob a barra, verifica se mouseIsDown é true. Se for, chama moveBar
+             * para mover a barra até a posição do cursor conforme ele se mexe.
+             */
+            containerBar.addEventListener('mousemove', evento => mouseFoiMovido(evento))
+
+            /*
+             * Se o cursor deixar de se mover sob a barra enquanto estiver pressionado, atribui false à 
+             * variável mouseIsDown para que a barra não se mova assim que o mouse voltar à barra
+             */
+            containerBar.addEventListener('mouseleave', () => mouseIsDown = false)
+
+        </script>
+
+    </body>
+</html>
